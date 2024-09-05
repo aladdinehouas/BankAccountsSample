@@ -22,7 +22,6 @@ struct Account : Codable, Identifiable {
 	let product_code : String?
 	let balance : Double?
 	let operations : [Operation]?
-    var isCollapsed: Bool = true
 
 	enum CodingKeys: String, CodingKey {
 

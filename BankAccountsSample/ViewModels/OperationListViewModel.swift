@@ -7,8 +7,6 @@
 
 import Foundation
 
-import Foundation
-
 class OperationListViewModel: ObservableObject, Identifiable, Hashable {
     @Published var operations: [OperationViewModel] = []
     private let account: Account  // Utilisé pour comparaison dans Hashable
