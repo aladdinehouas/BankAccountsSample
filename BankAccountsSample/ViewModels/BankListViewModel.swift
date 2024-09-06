@@ -20,38 +20,40 @@ class BankListViewModel: ObservableObject {
         self.repository = repository
     }
     
-    // Fonction pour charger les banques
     func loadBanks() async {
         DispatchQueue.main.async {
             self.isLoading = true
             self.errorMessage = nil
         }
-        
+
         do {
             let banks = try await repository.getBanks()
-            print("Banks received in loadBanks: \(banks)")
+            
+            let creditAgricole = banks.filter { bank in
+                if let isCA = bank.isCA {
+                    let result = isCA == 1
+                    return result
+                }
+                return false
+            }
+            
+            let otherBanks = banks.filter { bank in
+                if let isCA = bank.isCA {
+                    let result = isCA != 1
+                    return result
+                }
+                return false
+            }
+            
+            // Tri et mapping
+            self.creditAgricoleBanks = creditAgricole
+                .sorted { ($0.name ?? "") < ($1.name ?? "") }
+                .map(BankViewModel.init)
+            self.otherBanks = otherBanks
+                .sorted { ($0.name ?? "") < ($1.name ?? "") }
+                .map(BankViewModel.init)
             
             DispatchQueue.main.async {
-                self.creditAgricoleBanks = banks
-                    .filter { bank in
-                        if let isCA = bank.isCA {
-                            return isCA == 1
-                        }
-                        return false
-                    }
-                    .sorted { ($0.name ?? "") < ($1.name ?? "") }  // Tri alphabétique
-                    .map(BankViewModel.init)
-                
-                self.otherBanks = banks
-                    .filter { bank in
-                        if let isCA = bank.isCA {
-                            return isCA != 1
-                        }
-                        return false
-                    }
-                    .sorted { ($0.name ?? "") < ($1.name ?? "") }  // Tri alphabétique
-                    .map(BankViewModel.init)
-                
                 self.isLoading = false
             }
         } catch {
@@ -60,8 +62,5 @@ class BankListViewModel: ObservableObject {
                 self.errorMessage = "Erreur de chargement des données"
             }
         }
-        
-        print("Crédit Agricole Banks: \(self.creditAgricoleBanks)")
-        print("Other Banks: \(self.otherBanks)")
     }
 }
