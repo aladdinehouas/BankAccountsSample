@@ -10,7 +10,7 @@ import Foundation
 class CacheManager {
     static let shared = CacheManager()  // Singleton pour le cache
     
-    private let cacheExpirationInterval: TimeInterval = 60 * 120  // 5 minutes
+    private let cacheExpirationInterval: TimeInterval = 60 * 5  // 5 minutes
     private var cachedBanks: [Bank]?
     private var cacheTimestamp: Date?
 

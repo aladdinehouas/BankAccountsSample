@@ -15,12 +15,24 @@ struct OperationListView: View {
             HStack {
                 VStack(alignment: .leading) {
                     Text(operationVM.title)
-                    Text(operationVM.date).font(.subheadline).foregroundColor(.gray)
+                    Text(operationVM.amount)
                 }
                 Spacer()
-                Text(operationVM.amount)
+                // Affichage de la date formatée
+                if let date = operationVM.dateObject {
+                    Text("\(date, formatter: operationDateFormatter)")
+                }
             }
         }
         .navigationTitle("Opérations")
     }
 }
+
+
+// DateFormatter pour afficher la date dans un format lisible
+private let operationDateFormatter: DateFormatter = {
+    let formatter = DateFormatter()
+    formatter.dateStyle = .medium
+    formatter.timeStyle = .none
+    return formatter
+}()

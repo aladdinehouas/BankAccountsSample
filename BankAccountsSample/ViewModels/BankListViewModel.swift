@@ -13,7 +13,7 @@ class BankListViewModel: ObservableObject {
     @Published var otherBanks: [BankViewModel] = []
     @Published var isLoading = false
     @Published var errorMessage: String?
-
+    
     private let repository: BankRepositoryProtocol
     
     init(repository: BankRepositoryProtocol = BankRepository()) {
@@ -29,16 +29,27 @@ class BankListViewModel: ObservableObject {
         
         do {
             let banks = try await repository.getBanks()
+            print("Banks received in loadBanks: \(banks)")
             
             DispatchQueue.main.async {
                 self.creditAgricoleBanks = banks
-                    .filter { $0.isCA == 1 }
-                    .sorted { $0.name ?? "" < $1.name ?? "" }
+                    .filter { bank in
+                        if let isCA = bank.isCA {
+                            return isCA == 1
+                        }
+                        return false
+                    }
+                    .sorted { ($0.name ?? "") < ($1.name ?? "") }  // Tri alphabétique
                     .map(BankViewModel.init)
                 
                 self.otherBanks = banks
-                    .filter { $0.isCA != 1 }
-                    .sorted { $0.name ?? "" < $1.name ?? "" }
+                    .filter { bank in
+                        if let isCA = bank.isCA {
+                            return isCA != 1
+                        }
+                        return false
+                    }
+                    .sorted { ($0.name ?? "") < ($1.name ?? "") }  // Tri alphabétique
                     .map(BankViewModel.init)
                 
                 self.isLoading = false
@@ -49,5 +60,8 @@ class BankListViewModel: ObservableObject {
                 self.errorMessage = "Erreur de chargement des données"
             }
         }
+        
+        print("Crédit Agricole Banks: \(self.creditAgricoleBanks)")
+        print("Other Banks: \(self.otherBanks)")
     }
 }

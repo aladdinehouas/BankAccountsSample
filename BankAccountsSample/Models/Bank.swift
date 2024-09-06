@@ -17,6 +17,13 @@ struct Bank : Codable, Identifiable {
 	let name : String?
 	let isCA : Int?
 	let accounts : [Account]?
+    
+    // Constructeur personnalisé pour faciliter les tests
+        init(name: String?, isCA: Int?, accounts: [Account]?) {
+            self.name = name
+            self.isCA = isCA
+            self.accounts = accounts
+        }
 
 	enum CodingKeys: String, CodingKey {
 

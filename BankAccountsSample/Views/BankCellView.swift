@@ -9,8 +9,8 @@ import SwiftUI
 
 struct BankCellView: View {
     @ObservedObject var viewModel: BankViewModel
-    @ObservedObject var coordinator: Coordinator  // Ajout du Coordinator ici
-
+    @ObservedObject var coordinator: Coordinator
+    
     var body: some View {
         DisclosureGroup(isExpanded: $viewModel.isExpanded) {
             ForEach(viewModel.accounts) { accountVM in
@@ -19,6 +19,7 @@ struct BankCellView: View {
                 }) {
                     Text(accountVM.label)
                 }
+                .buttonStyle(PlainButtonStyle()) 
             }
         } label: {
             Text(viewModel.name)

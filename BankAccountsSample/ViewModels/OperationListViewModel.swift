@@ -9,53 +9,40 @@ import Foundation
 
 class OperationListViewModel: ObservableObject, Identifiable, Hashable {
     @Published var operations: [OperationViewModel] = []
-    private let account: Account  // Utilisé pour comparaison dans Hashable
+    private let account: Account
 
     init(account: Account) {
         self.account = account
         if let operations = account.operations {
             self.operations = operations.sorted {
-                if $0.date == $1.date {
+                // Convertir les dates String en Date pour comparer
+                let date1 = convertToDate(from: $0.date) ?? Date.distantPast
+                let date2 = convertToDate(from: $1.date) ?? Date.distantPast
+
+                if date1 == date2 {
+                    // Si les dates sont égales, trier par titre (ordre alphabétique)
                     return $0.title ?? "" < $1.title ?? ""
                 }
-                return $0.date ?? "" > $1.date ?? ""
+                // Trier par date (du plus récent au plus ancien)
+                return date1 > date2
             }.map(OperationViewModel.init)
         }
     }
 
+    // Fonction pour convertir les timestamps Unix en Date
+    private func convertToDate(from timestamp: String?) -> Date? {
+        guard let timestamp = timestamp, let timeInterval = TimeInterval(timestamp) else {
+            return nil
+        }
+        return Date(timeIntervalSince1970: timeInterval)
+    }
+
+    // Hashable et Identifiable conformances
     static func == (lhs: OperationListViewModel, rhs: OperationListViewModel) -> Bool {
         return lhs.account.id == rhs.account.id
     }
 
     func hash(into hasher: inout Hasher) {
         hasher.combine(account.id)
-    }
-}
-
-class OperationViewModel: Identifiable {
-    let operation: Operation
-    
-    var id: String {
-        return operation.id ?? UUID().uuidString
-    }
-    
-    var title: String {
-        return operation.title ?? "Unknown Operation"
-    }
-    
-    var amount: String {
-        return operation.amount ?? "0"
-    }
-    
-    var category: String {
-        return operation.category ?? "Uncategorized"
-    }
-    
-    var date: String {
-        return operation.date ?? ""
-    }
-    
-    init(operation: Operation) {
-        self.operation = operation
     }
 }
