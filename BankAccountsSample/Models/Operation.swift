@@ -36,5 +36,14 @@ struct Operation : Codable, Identifiable {
 		category = try values.decodeIfPresent(String.self, forKey: .category)
 		date = try values.decodeIfPresent(String.self, forKey: .date)
 	}
+    
+    // Initialiseur personnalisé pour les tests
+      init(id: String?, title: String?, amount: String?, category: String?, date: String?) {
+          self.id = id
+          self.title = title
+          self.amount = amount
+          self.category = category
+          self.date = date
+      }
 
 }

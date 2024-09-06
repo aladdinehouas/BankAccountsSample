@@ -48,5 +48,28 @@ struct Account : Codable, Identifiable {
 		balance = try values.decodeIfPresent(Double.self, forKey: .balance)
 		operations = try values.decodeIfPresent([Operation].self, forKey: .operations)
 	}
-
+    
+    
+    // Initialiseur personnalisé pour les tests
+    init(
+        order: Int? = nil,
+        id: String? = nil,
+        holder: String? = nil,
+        role: Int? = nil,
+        contract_number: String? = nil,
+        label: String? = nil,
+        product_code: String? = nil,
+        balance: Double? = nil,
+        operations: [Operation]? = nil
+    ) {
+        self.order = order
+        self.id = id
+        self.holder = holder
+        self.role = role
+        self.contract_number = contract_number
+        self.label = label
+        self.product_code = product_code
+        self.balance = balance
+        self.operations = operations
+    }
 }

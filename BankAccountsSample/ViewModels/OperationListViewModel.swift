@@ -30,7 +30,7 @@ class OperationListViewModel: ObservableObject, Identifiable, Hashable {
     }
 
     // Fonction pour convertir les timestamps Unix en Date
-    private func convertToDate(from timestamp: String?) -> Date? {
+    func convertToDate(from timestamp: String?) -> Date? {
         guard let timestamp = timestamp, let timeInterval = TimeInterval(timestamp) else {
             return nil
         }
